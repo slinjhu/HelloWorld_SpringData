@@ -2,7 +2,9 @@ package data.controller;
 
 import data.model.Book;
 import data.repository.BookRepository;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class BookController {
   @Autowired
   private BookRepository _repository;
+
 
   @GetMapping("/id/{id}")
   public Book findBookById(@PathVariable("id") long id){
@@ -65,4 +68,15 @@ public class BookController {
     _repository.save(new Book(0, title, author, year));
     return _repository.findAll();
   }
+
+  /**
+   * Find all books with Spring Pagination
+   * @param pageable Provide page and size in URL: http://localhost:8080/bookpage?page=1&size=2
+   * @return Array of objects in the page.
+   */
+  @GetMapping("bookpage")
+  public List<Book> findAllInPage(Pageable pageable){
+    return _repository.findAll(pageable).getContent();
+  }
+
 }
